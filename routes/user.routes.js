@@ -1,65 +1,93 @@
 import express from "express";
+import UserModel from "../model/user.model.js";
 
 const userRoute = express.Router()
 
-// BANCO DE DADOS
-const bd = [
-    {
-        id: "696ca487-6a27-47cd-8e41-cc2b57eb7a61",
-        name: 'Tibério Dâmaso Mendonça',
-        age: 42,
-        role: 'Aluno',
-        active: true,
-        tasks: [
-            'CRUD no mongoDB'
-        ]
+// ROTAS PARA MONGO
+// New user
+userRoute.post('/new-user', async (req, res) => {
+    try {
+        const form = req.body
+        const newUser = await UserModel.create(form)
+        return res.status(201).json(newUser)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ msg: 'Algo deu errado na criação do usuário' })
     }
-]
-
-// ROTAS
-
-// Home
-userRoute.get('/', (req, res) => {
-    return res.status(200).json({ msg: 'Bem vindo ao servidor' })
 })
 
 // All users
-userRoute.get('/all-users', (req, res) => {
+userRoute.get('/all-users', async (req, res) => {
+    try {
 
-    return res.status(200).json({ bd: bd })
+        // find vazio -> todas as ocorrencias
+        // projections -> defini os campos que vão ser retornados
+        // sort() -> ordenada o retorno dos dados
+        // limit() -> define quantas ocorrencias serão retornadas
+        const users = await UserModel.find({}, { __v: 0, updatedAt: 0, createdAt: 0 }).sort({ age: 1 }).limit(100)
+        return res.status(200).json(users)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error.errors)
+    }
 })
 
-// Create user
-userRoute.post('/create-user', (req, res) => {
+// Get one user
+userRoute.get('/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        // const user = await UserModel.find({ _id: id }) // Mongo
+        const user = await UserModel.findById(id) // Mongoose
 
-    bd.push(req.body)
+        if (!user) {
+            return res.status(400).json({ msg: 'Usuário não encontrado' })
+        }
 
-    return res.status(201).json({ bd: bd })
+        return res.status(200).json(user)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error.errors)
+    }
 })
 
 // Delete user
-userRoute.delete('/delete-user/:id', (req, res) => {
-    // Desconstrução do objeto req.params e salvando o id em uma const chamada id
-    const {id} = req.params
-    const user = bd.indexOf(bd.find((user) => user.id === id))
-    bd.splice(user, 1)
+userRoute.delete('/delete/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const user = await UserModel.findByIdAndDelete(id) // Mongoose
 
-    return res.status(200).json({ bd: bd })
+        if (!user) {
+            return res.status(400).json({ msg: 'Usuário não encontrado' })
+        }
+
+        return res.status(200).json(user)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error.errors)
+    }
 })
 
 // Update user
-userRoute.put('/update-user/:id', (req, res) => {
-    // Desconstrução do objeto req.params e salvando o id em uma const chamada id
-    const {id} = req.params
-    const user = bd.find((user) => user.id === id)
-    const index = bd.indexOf(user)
-    const clone = {...user, ...req.body}
-    bd[index] = clone
+userRoute.put('/update/:id', async (req, res) => {
+    try {
+        const { id } = req.params
 
-    return res.status(201).json({ db: db })
+        // Mongoose
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            id,
+            { ...req.body },
+            {new: true, runValidators: true} // new retorna o usuário atualizado e não a antiga
+        )
 
+        if (!updatedUser) {
+            return res.status(400).json({ msg: 'Usuário não encontrado' })
+        }
 
-    return res.status(201).json({ bd: bd })
+        return res.status(200).json(updatedUser)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error.errors)
+    }
 })
 
 export default userRoute

@@ -1,7 +1,7 @@
 import express from 'express'
 import * as dotenv from 'dotenv'
-import userRoute from './routes/user.routes.js'
 import connect from './config/db.config.js'
+import userRoute from './routes/user.routes.js'
 
 // HABILITAR O SERVER A ACESSAR VARIÁVEIS DE AMBIENTE
 dotenv.config()
