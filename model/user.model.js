@@ -1,7 +1,14 @@
 import { Schema, model } from "mongoose";
 
 const userSchema = new Schema({
-    name: {
+    cpf: {
+        type: String,
+        required: true,
+        trim: true,
+        minLength: 14,
+        maxLenght: 14
+    },
+    first_name: {
         type: String,
         required: true,
         trim: true,
@@ -9,10 +16,13 @@ const userSchema = new Schema({
         maxLenght: 20,
         lowercase: true
     },
-    age: {
-        type: Number,
-        min: 18,
-        max: 100
+    last_name: {
+        type: String,
+        required: true,
+        trim: true,
+        minLength: 3,
+        maxLenght: 50,
+        lowercase: true
     },
     email: {
         type: String,
@@ -24,14 +34,13 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['professora', 'aluno', 'TA'],
-        default: 'aluno'
+        enum: ['Professor', 'Aluno', 'TA'],
+        default: 'Aluno'
     },
     active: {
         type: Boolean,
         default: true
     },
-    tasks: [{type: String}]
 },
 {
     timestamps: true

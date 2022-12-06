@@ -5,7 +5,7 @@ const userRoute = express.Router()
 
 // ROTAS PARA MONGO
 // New user
-userRoute.post('/new-user', async (req, res) => {
+userRoute.post('/signup', async (req, res) => {
     try {
         const form = req.body
         const newUser = await UserModel.create(form)
