@@ -2,6 +2,7 @@ import express from 'express'
 import * as dotenv from 'dotenv'
 import connect from './config/db.config.js'
 import userRoute from './routes/user.routes.js'
+import cors from 'cors'
 
 // HABILITAR O SERVER A ACESSAR VARIÁVEIS DE AMBIENTE
 dotenv.config()
@@ -11,6 +12,9 @@ const app = express()
 
 // CONFIGURAR O SERVIDOR PARA ACEITAR ENVIAR E RECEBER JSON
 app.use(express.json())
+
+// CONFIGURAR O SERVIDOR PARA CORS
+app.use(cors())
 
 connect()
 
