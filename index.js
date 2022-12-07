@@ -1,28 +1,31 @@
-import express from 'express'
-import * as dotenv from 'dotenv'
-import connect from './config/db.config.js'
-import userRoute from './routes/user.routes.js'
-import cors from 'cors'
-import uploadRoute from './routes/uploadImage.routes.js'
+import express from 'express';
+import * as dotenv from 'dotenv';
+import connect from './config/db.config.js';
+import userRoute from './routes/user.routes.js';
+import cors from 'cors';
+import uploadRoute from './routes/uploadImage.routes.js';
+import dcpRoute from './routes/dcp.routes.js';
 
 // HABILITAR O SERVER A ACESSAR VARIÁVEIS DE AMBIENTE
-dotenv.config()
+dotenv.config();
 
 // INSTANCIAR A VARIÁVEL QUE FICARÁ RESPONSÁVEL PELO NOSSO SERVIDOR
-const app = express()
+const app = express();
 
 // CONFIGURAR O SERVIDOR PARA ACEITAR ENVIAR E RECEBER JSON
-app.use(express.json())
+app.use(express.json());
 
 // CONFIGURAR O SERVIDOR PARA CORS
-app.use(cors())
+app.use(cors());
 
-connect()
+connect();
 
-app.use('/user', userRoute)
-app.use('/uploadImage', uploadRoute)
-
+app.use('/user', userRoute);
+app.use('/uploadImage', uploadRoute);
+app.use('/dcp', dcpRoute);
 
 app.listen(process.env.PORT, () => {
-    console.log(`App up and running on port https://localhost:${process.env.PORT}`)
-})
+    console.log(
+        `App up and running on port https://localhost:${process.env.PORT}`
+    );
+});

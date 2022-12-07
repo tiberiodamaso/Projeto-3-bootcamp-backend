@@ -32,7 +32,7 @@ const dcpSchema = new Schema({
     Servico_Acrescimo: { type: Number },
     CP_Deduzidos: { type: Number },
     CP_Transferidos: { type: Number },
-    CP_Pedidos_de_ressarcimento,
+    CP_Pedidos_de_ressarcimento: { type: Number },
 });
 
 const DcpModel = model('Dcp', dcpSchema);
