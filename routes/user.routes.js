@@ -102,24 +102,7 @@ userRoute.get('/all-users', isAuth, isAdmin, async (req, res) => {
   }
 })
 
-// // All users com sort e limit
-// userRoute.get('/all-users', async (req, res) => {
-//   try {
-
-//     // find vazio -> todas as ocorrencias
-//     // projections -> defini os campos que vão ser retornados
-//     // sort() -> ordenada o retorno dos dados
-//     // limit() -> define quantas ocorrencias serão retornadas
-//     const users = await UserModel.find({}, { __v: 0, updatedAt: 0, createdAt: 0 }).sort({ age: 1 }).limit(100)
-//     return res.status(200).json(users)
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json(error.errors)
-//   }
-// })
-
 // Get one user
-
 userRoute.get('/:id', async (req, res) => {
   try {
     const { id } = req.params
@@ -178,3 +161,20 @@ userRoute.put('/update/:id', async (req, res) => {
 })
 
 export default userRoute
+
+
+// // All users com sort e limit
+// userRoute.get('/all-users', async (req, res) => {
+//   try {
+
+//     // find vazio -> todas as ocorrencias
+//     // projections -> defini os campos que vão ser retornados
+//     // sort() -> ordenada o retorno dos dados
+//     // limit() -> define quantas ocorrencias serão retornadas
+//     const users = await UserModel.find({}, { __v: 0, updatedAt: 0, createdAt: 0 }).sort({ age: 1 }).limit(100)
+//     return res.status(200).json(users)
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json(error.errors)
+//   }
+// })

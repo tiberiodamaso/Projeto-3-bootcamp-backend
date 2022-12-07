@@ -1,11 +1,9 @@
 import UserModel from "../model/user.model.js"
 
-
-
 async function attachCurrentUser(req, res, next) {
   try {
     const userData = req.auth
-    const user = UserModel.findById(userData._id, {passwordHash: 0})
+    const user = await UserModel.findById(userData._id, {passwordHash: 0})
     
     // Checar se existe o user
     if(!user) {
