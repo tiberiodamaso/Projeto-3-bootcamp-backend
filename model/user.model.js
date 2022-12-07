@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import validarCPF from '../utils/validarCPF.js'
 
 const userSchema = new Schema({
     cpf: {
@@ -6,7 +7,13 @@ const userSchema = new Schema({
         required: true,
         trim: true,
         minLength: 14,
-        maxLenght: 14
+        maxLenght: 14,
+        validate: {
+          validator: function(v){
+            return validarCPF(v)
+          },
+          message: props => `${props.value} is not a valid CPF!`
+        }
     },
     first_name: {
         type: String,
@@ -36,6 +43,10 @@ const userSchema = new Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
+    },
+    imgProfile: {
+        type: String,
+        default: ''
     },
     passwordHash: {
         type: String,
