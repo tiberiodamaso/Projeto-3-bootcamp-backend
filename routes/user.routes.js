@@ -51,10 +51,10 @@ userRoute.post('/login', async (req, res) => {
     const { email, password } = req.body
 
     // Achar o user pelo email
-    const user = await UserModel.findOne({email: email})
+    const user = await UserModel.findOne({ email: email })
     // Chegar se o email existe
     if (!user) {
-      return res.status(400).json({ msg: 'Usuário não cadastrado'})
+      return res.status(400).json({ msg: 'Usuário não cadastrado' })
     }
 
     // Comparar as senhas
@@ -65,10 +65,10 @@ userRoute.post('/login', async (req, res) => {
 
       // Devolte um token de acesso
       const token = generateToken(user)
-      return res.status(200).json({user: user, token: token})
+      return res.status(200).json({ user: user, token: token })
 
     } else {
-      return res.status(401).json({msg: 'Email ou senha incorretos'})
+      return res.status(401).json({ msg: 'Email ou senha incorretos' })
     }
 
 
@@ -79,7 +79,7 @@ userRoute.post('/login', async (req, res) => {
 })
 
 // Profile
-userRoute.get('/profile', isAuth, attachCurrentUser, async(req, res) => {
+userRoute.get('/profile', isAuth, attachCurrentUser, async (req, res) => {
   try {
     return res.status(200).json(req.currentUser)
   } catch (error) {
@@ -138,13 +138,14 @@ userRoute.delete('/delete/:id', async (req, res) => {
 })
 
 // Update user
-userRoute.put('/update/:id', async (req, res) => {
+userRoute.put('/update', isAuth, attachCurrentUser, async (req, res) => {
   try {
-    const { id } = req.params
+
+    const loggedInUserId = req.currentUser._id
 
     // Mongoose
     const updatedUser = await UserModel.findByIdAndUpdate(
-      id,
+      loggedInUserId,
       { ...req.body },
       { new: true, runValidators: true } // new retorna o usuário atualizado e não a antiga
     )
