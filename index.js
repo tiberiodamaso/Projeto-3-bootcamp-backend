@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv'
 import connect from './config/db.config.js'
 import userRoute from './routes/user.routes.js'
 import cors from 'cors'
+import uploadRoute from './routes/uploadImage.route.js'
 
 // HABILITAR O SERVER A ACESSAR VARIÁVEIS DE AMBIENTE
 dotenv.config()
@@ -19,6 +20,7 @@ app.use(cors())
 connect()
 
 app.use('/user', userRoute)
+app.use('/uploadImage', uploadRoute)
 
 
 app.listen(process.env.PORT, () => {
