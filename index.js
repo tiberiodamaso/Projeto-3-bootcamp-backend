@@ -5,6 +5,7 @@ import userRoute from './routes/user.routes.js';
 import cors from 'cors';
 import uploadRoute from './routes/uploadImage.routes.js';
 import dcpRoute from './routes/dcp.routes.js';
+import nfeRoute from './routes/nfe.routes.js';
 
 // HABILITAR O SERVER A ACESSAR VARIÁVEIS DE AMBIENTE
 dotenv.config();
@@ -23,6 +24,7 @@ connect();
 app.use('/user', userRoute);
 app.use('/uploadImage', uploadRoute);
 app.use('/dcp', dcpRoute);
+app.use('/nfe', nfeRoute);
 
 app.listen(process.env.PORT, () => {
     console.log(

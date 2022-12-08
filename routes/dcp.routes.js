@@ -23,4 +23,15 @@ dcpRoute.get('/all-dcp', isAuth, attachCurrentUser, async (req, res) => {
     }
 });
 
+dcpRoute.get('/one-dcp/:id', isAuth, attachCurrentUser, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const dcp = await DcpModel.findById(id);
+        return res.status(200).json(dcp);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error.errors);
+    }
+});
+
 export default dcpRoute;

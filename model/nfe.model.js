@@ -14,6 +14,7 @@ const nfeSchema = new Schema({
     desc_nmc: { type: String, required: true },
     mercadoria: { type: String, required: true },
     valor: { type: Schema.Types.Decimal128 },
+    cnpj: { type: String, required: true },
 });
 
 const NfeModel = model('Nfe', nfeSchema);
