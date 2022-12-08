@@ -168,10 +168,10 @@ userRoute.get('/:id', async (req, res) => {
 })
 
 // Delete user
-userRoute.delete('/delete/:id', async (req, res) => {
+userRoute.delete('/delete', isAuth, attachCurrentUser, async (req, res) => {
   try {
-    const { id } = req.params
-    const user = await UserModel.findByIdAndDelete(id) // Mongoose
+    const loggedInUserId = req.currentUser._id
+    const user = await UserModel.findByIdAndDelete(loggedInUserId) // Mongoose
 
     if (!user) {
       return res.status(400).json({ msg: 'Usuário não encontrado' })
