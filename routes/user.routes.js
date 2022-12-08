@@ -5,16 +5,25 @@ import generateToken from "../config/jwt.config.js";
 import isAuth from "../middlewares/isAuth.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 import isAdmin from "../middlewares/isAdmin.js";
+import nodemailer from 'nodemailer'
 
 const userRoute = express.Router()
 const saltRounds = 10
+const transporter = nodemailer.createTransport({
+  service: 'Hotmail',
+  auth: {
+    secure: false,
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS
+  }
+})
 
 // ROTAS PARA MONGO
 // New user
 userRoute.post('/signup', async (req, res) => {
   try {
     // Capturando a senha do frontend
-    const { password } = req.body
+    const { password, email } = req.body
 
     // Checando se a senha existe e se atende aos critérios de segurança
     if (!password || !password.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/)) {
@@ -36,11 +45,43 @@ userRoute.post('/signup', async (req, res) => {
     // Deleta o passwordHash do obj antes de retornar a resposta
     delete newUser._doc.hashedPassword
 
+    // Envia email de confirmação
+    const mailOptions = {
+      from: 'turma92wd@hotmail.com',
+      to: email,
+      subject: 'Ativação de conta',
+      html: `
+      <h1>Bem vindo ao nosso site</h1>
+      <p>Confirme seu email clicando no link abaixo</p>
+      <a href="http://127.0.0.1:8082/user/activate-account/${newUser._id}">Ative sua conta</a>
+      `
+    }
+
+    await transporter.sendMail(mailOptions)
+
     return res.status(201).json(newUser)
 
   } catch (error) {
     console.log(error)
     res.status(500).json({ msg: 'Algo deu errado na criação do usuário' })
+  }
+})
+
+// Activate user
+userRoute.get('/activate-account/:id', async (req, res) => {
+  try {
+    // Capturando o id do usuário
+    console.log(req)
+    const { id } = req.params
+    console.log(id)
+    const user = await UserModel.findByIdAndUpdate(id, {confirmEmail: true, active: true})
+    console.log(user)
+
+    return res.send(`Sua conta foi ativada com sucesso ${user.first_name}`)
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Algo deu errado na ativação do usuário' })
   }
 })
 
@@ -52,7 +93,13 @@ userRoute.post('/login', async (req, res) => {
 
     // Achar o user pelo email
     const user = await UserModel.findOne({ email: email })
+
     // Chegar se o email existe
+    if (user.confirmEmail === false) {
+      return res.status(401).json({ msg: 'Usuário não confirmado, favor validar email' })
+    }
+
+    // Chegar se o usuário existe
     if (!user) {
       return res.status(400).json({ msg: 'Usuário não cadastrado' })
     }

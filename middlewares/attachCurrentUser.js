@@ -10,6 +10,11 @@ async function attachCurrentUser(req, res, next) {
       return res.status(400).json({msg: 'Usuário não encontrado'})
     }
 
+    // Confirmar se o usuário tem o email confirmado
+    if (user.confirmEmail === false) {
+      return res.status(401).json({msg: 'Por favor confirmar email'})
+    }
+
     // Criando uma chave com o usuário corrente na requisição  
     req.currentUser = user
 
