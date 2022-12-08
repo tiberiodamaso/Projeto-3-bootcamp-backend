@@ -8,15 +8,14 @@ const nfeRoute = express.Router();
 
 // ROTAS PARA MONGO
 
-// All NFe
+// All NFe ======EM TESTE AINDA====
 nfeRoute.get('/all-nfe', isAuth, attachCurrentUser, async (req, res) => {
     try {
-        console.log('rota ok');
-        const nfes = await NfeModel.find(
-            { ano: 2020, mes: 1 },
-            { ano: 1, mes: 1 },
-            { ano: 1, mes: 1 }
-        );
+        const nfes = await NfeModel.find({
+            cnpj: req.query.cnpj,
+            ano: req.query.ano,
+            mes: req.query.mes,
+        });
         return res.status(200).json(nfes);
     } catch (error) {
         console.log(error);
@@ -27,8 +26,9 @@ nfeRoute.get('/all-nfe', isAuth, attachCurrentUser, async (req, res) => {
 nfeRoute.get('/one-nfe/:id', isAuth, attachCurrentUser, async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(id);
+
         const nfe = await NfeModel.findById(id);
+        console.log(nfe);
         if (!nfe) {
             return res.status(400).json({ msg: 'Nota Fiscal não encontrada!' });
         }
