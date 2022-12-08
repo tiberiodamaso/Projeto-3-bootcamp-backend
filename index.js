@@ -27,7 +27,6 @@ app.use('/dcp', dcpRoute);
 app.use('/nfe', nfeRoute);
 
 app.listen(process.env.PORT, () => {
-    console.log(
-        `App up and running on port https://localhost:${process.env.PORT}`
-    );
-});
+    console.log(`App up and running on port http://localhost:${process.env.PORT}`)
+})
+

@@ -48,13 +48,17 @@ const userSchema = new Schema({
         type: String,
         default: ''
     },
+    confirmEmail: {
+        type: Boolean,
+        default: false
+    },
     passwordHash: {
         type: String,
         required: true
     },
     active: {
         type: Boolean,
-        default: true
+        default: false
     },
 },
 {
