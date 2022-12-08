@@ -2,19 +2,21 @@ import express from 'express';
 import NfeModel from '../model/nfe.model.js';
 import isAuth from '../middlewares/isAuth.js';
 import attachCurrentUser from '../middlewares/attachCurrentUser.js';
-import isAdmin from '../middlewares/isAdmin.js';
+import trimestre from '../utils/trimestre.js';
 
 const nfeRoute = express.Router();
 
 // ROTAS PARA MONGO
 
-// All NFe ======EM TESTE AINDA====
+// All NFe - Retorna todas as notas para o trimestre da DCP em análise
 nfeRoute.get('/all-nfe', isAuth, attachCurrentUser, async (req, res) => {
     try {
+        const { lower, upper } = trimestre(req.query.mes);
+        console.log(lower, upper);
         const nfes = await NfeModel.find({
             cnpj: req.query.cnpj,
             ano: req.query.ano,
-            mes: req.query.mes,
+            $and: [{ mes: { $gte: lower } }, { mes: { $lte: upper } }],
         });
         return res.status(200).json(nfes);
     } catch (error) {
