@@ -47,7 +47,7 @@ userRoute.post('/signup', async (req, res) => {
 
     // Envia email de confirmação
     const mailOptions = {
-      from: 'turma92wd@hotmail.com',
+      from: 'tiberio.mendonca@meucontato.app.br',
       to: email,
       subject: 'Ativação de conta',
       html: `
@@ -71,11 +71,8 @@ userRoute.post('/signup', async (req, res) => {
 userRoute.get('/activate-account/:id', async (req, res) => {
   try {
     // Capturando o id do usuário
-    console.log(req)
     const { id } = req.params
-    console.log(id)
     const user = await UserModel.findByIdAndUpdate(id, {confirmEmail: true, active: true})
-    console.log(user)
 
     return res.send(`Sua conta foi ativada com sucesso ${user.first_name}`)
 
