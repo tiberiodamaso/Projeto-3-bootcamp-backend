@@ -34,4 +34,16 @@ dcpRoute.get('/one-dcp/:id', isAuth, attachCurrentUser, async (req, res) => {
     }
 });
 
+// DCPs by CNPJ
+dcpRoute.get('/cnpj/:cnpj', isAuth, attachCurrentUser, async (req, res) => {
+    try {
+        const { cnpj } = req.params;
+        const dcps = await DcpModel.find({Cnpj: cnpj});
+        return res.status(200).json(dcps);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error.errors);
+    }
+});
+
 export default dcpRoute;
