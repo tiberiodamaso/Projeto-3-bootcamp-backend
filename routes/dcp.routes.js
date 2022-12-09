@@ -1,5 +1,6 @@
 import express from 'express';
 import DcpModel from '../model/dcp.model.js';
+import LogModel from "../model/log.model.js";
 import isAuth from '../middlewares/isAuth.js';
 import attachCurrentUser from '../middlewares/attachCurrentUser.js';
 import isAdmin from '../middlewares/isAdmin.js';
@@ -39,6 +40,14 @@ dcpRoute.get('/cnpj/:cnpj', isAuth, attachCurrentUser, async (req, res) => {
     try {
         const { cnpj } = req.params;
         const dcps = await DcpModel.find({Cnpj: cnpj});
+
+        //LOG - Novo login
+        await LogModel.create({
+            user: req.currentUser._id,
+            route: "CNPJ",
+            log: `Consulta DCP do CNPJ: ${cnpj}`
+        });
+
         return res.status(200).json(dcps);
     } catch (error) {
         console.log(error);
