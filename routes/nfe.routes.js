@@ -11,8 +11,8 @@ const nfeRoute = express.Router();
 // All NFe - Retorna todas as notas para o trimestre da DCP em análise
 nfeRoute.get('/all-nfe', isAuth, attachCurrentUser, async (req, res) => {
     try {
-        const { lower, upper } = trimestre(req.query.mes);
-        console.log(lower, upper);
+        const { lower, upper } = trimestre(req.query.trim);
+
         const nfes = await NfeModel.find({
             cnpj: req.query.cnpj,
             ano: req.query.ano,

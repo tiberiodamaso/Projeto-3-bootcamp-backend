@@ -1,10 +1,10 @@
-function trimestre(mes) {
+function trimestre(trim) {
     let limites = {
         lower: null,
         upper: null,
     };
 
-    switch (mes) {
+    switch (trim) {
         case '1':
         case '2':
         case '3':
