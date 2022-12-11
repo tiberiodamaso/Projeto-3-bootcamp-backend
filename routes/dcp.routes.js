@@ -3,6 +3,7 @@ import DcpModel from '../model/dcp.model.js';
 import isAuth from '../middlewares/isAuth.js';
 import attachCurrentUser from '../middlewares/attachCurrentUser.js';
 import isAdmin from '../middlewares/isAdmin.js';
+import trimestre from '../utils/trimestre.js';
 
 const dcpRoute = express.Router();
 
@@ -11,11 +12,14 @@ const dcpRoute = express.Router();
 // All DCP
 dcpRoute.get('/all-dcp', isAuth, attachCurrentUser, async (req, res) => {
     try {
-        const dcps = await DcpModel.find(
-            {},
-            { Ano: 1, Mes: 1 },
-            { Ano: 1, Mes: 1 }
-        );
+        const { cnpj } = req.query;
+        const { lower, upper } = trimestre(req.query.trim);
+        console.log(cnpj, lower, upper, req.query.trim);
+        const dcps = await DcpModel.find({
+            cnpj: cnpj,
+            ano: req.query.ano,
+            $and: [{ mes: { $gte: lower } }, { mes: { $lte: upper } }],
+        });
         return res.status(200).json(dcps);
     } catch (error) {
         console.log(error);
@@ -37,8 +41,8 @@ dcpRoute.get('/one-dcp/:id', isAuth, attachCurrentUser, async (req, res) => {
 // DCPs by CNPJ
 dcpRoute.get('/cnpj/:cnpj', isAuth, attachCurrentUser, async (req, res) => {
     try {
-        const { cnpj } = req.params;
-        const dcps = await DcpModel.find({Cnpj: cnpj});
+        const { cnpj } = req.query.cnpj;
+        const dcps = await DcpModel.find({ Cnpj: cnpj });
         return res.status(200).json(dcps);
     } catch (error) {
         console.log(error);

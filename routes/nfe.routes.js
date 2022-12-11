@@ -13,11 +13,19 @@ nfeRoute.get('/all-nfe', isAuth, attachCurrentUser, async (req, res) => {
     try {
         const { lower, upper } = trimestre(req.query.trim);
 
-        const nfes = await NfeModel.find({
+        /*         const nfes = await NfeModel.find({
             cnpj: req.query.cnpj,
             ano: req.query.ano,
             $and: [{ mes: { $gte: lower } }, { mes: { $lte: upper } }],
-        });
+        }); */
+        const grupo = {
+            $group: {
+                _id: { ano: '$ano', mes: '$mes', cfop: '$cfop' },
+                total: { $sum: '$valor' },
+            },
+        };
+        const nfes = await NfeModel.aggregate([grupo]);
+
         return res.status(200).json(nfes);
     } catch (error) {
         console.log(error);
@@ -30,7 +38,7 @@ nfeRoute.get('/one-nfe/:id', isAuth, attachCurrentUser, async (req, res) => {
         const { id } = req.params;
 
         const nfe = await NfeModel.findById(id);
-        console.log(nfe);
+
         if (!nfe) {
             return res.status(400).json({ msg: 'Nota Fiscal não encontrada!' });
         }
