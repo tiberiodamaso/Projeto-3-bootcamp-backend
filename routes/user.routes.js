@@ -1,5 +1,6 @@
 import express from "express";
 import UserModel from "../model/user.model.js";
+import LogModel from "../model/log.model.js";
 import bcrypt from 'bcrypt'
 import generateToken from "../config/jwt.config.js";
 import isAuth from "../middlewares/isAuth.js";
@@ -10,7 +11,7 @@ import nodemailer from 'nodemailer'
 const userRoute = express.Router()
 const saltRounds = 10
 const transporter = nodemailer.createTransport({
-  service: 'Hotmail',
+  service: 'Outlook',
   auth: {
     secure: false,
     user: process.env.EMAIL,
@@ -47,7 +48,7 @@ userRoute.post('/signup', async (req, res) => {
 
     // Envia email de confirmação
     const mailOptions = {
-      from: 'tiberio.mendonca@meucontato.app.br',
+      from: 'luiz.agsimoes@outlook.com',
       to: email,
       subject: 'Ativação de conta',
       html: `
@@ -109,6 +110,16 @@ userRoute.post('/login', async (req, res) => {
 
       // Devolte um token de acesso
       const token = generateToken(user)
+
+
+      //LOG - Novo login
+      await LogModel.create({
+        user: user._id,
+        route: "LOGIN",
+        log: "Novo login"
+      });
+
+
       return res.status(200).json({ user: user, token: token })
 
     } else {
