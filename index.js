@@ -18,6 +18,7 @@ const app = express();
 app.use(express.json());
 
 // CONFIGURAR O SERVIDOR PARA CORS
+// app.use(cors({origin: process.env.REACT_URL}));
 app.use(cors());
 
 connect();
