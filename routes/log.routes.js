@@ -6,7 +6,7 @@ const logRoute = express.Router();
 
 logRoute.get("/all-logs", isAuth, async (req, res) => {
     try {
-      const logs = await LogModel.find().populate("user");
+      const logs = await LogModel.find().sort({'date': -1}).populate("user");
 
       return res.status(200).json(logs);
     } catch (error) {

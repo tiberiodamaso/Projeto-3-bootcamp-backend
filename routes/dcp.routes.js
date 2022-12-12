@@ -55,10 +55,10 @@ dcpRoute.get('/cnpj/:cnpj', isAuth, attachCurrentUser, async (req, res) => {
         
         
 
-        //LOG - Novo login
+        //LOG
         await LogModel.create({
             user: req.currentUser._id,
-            route: "CNPJ",
+            route: "DCP/CNPJ",
             log: `Consulta DCP do CNPJ: ${cnpj}`
         });
 
