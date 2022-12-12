@@ -13,13 +13,16 @@ const dcpRoute = express.Router();
 // All DCP
 dcpRoute.get('/all-dcp', isAuth, attachCurrentUser, async (req, res) => {
     try {
-        const { cnpj } = req.query;
-        const { lower, upper } = trimestre(req.query.trim);
-        console.log(cnpj, lower, upper, req.query.trim);
+        console.log(req.query)
+        const { cnpj, ano, trimestre } = req.query;
+        console.log(cnpj, ano, trimestre)
+        // const { lower, upper } = trimestre(req.query.trim);
+        // console.log(cnpj, lower, upper, req.query.trim);
         const dcps = await DcpModel.find({
-            cnpj: cnpj,
-            ano: req.query.ano,
-            $and: [{ mes: { $gte: lower } }, { mes: { $lte: upper } }],
+            cnpj: String(cnpj),
+            ano: ano,
+            trimestre: trimestre
+            // $and: [{ mes: { $gte: lower } }, { mes: { $lte: upper } }],
         });
         return res.status(200).json(dcps);
     } catch (error) {
