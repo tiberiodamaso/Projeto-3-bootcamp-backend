@@ -42,7 +42,7 @@ dcpRoute.get('/one-dcp/:id', isAuth, attachCurrentUser, async (req, res) => {
 // DCPs by CNPJ
 dcpRoute.get('/cnpj/:cnpj', isAuth, attachCurrentUser, async (req, res) => {
     try {
-        const { cnpj } = req.query.cnpj;
+        const { cnpj } = req.params;
         const dcps = await DcpModel.find({Cnpj: cnpj});
 
         //LOG - Novo login
