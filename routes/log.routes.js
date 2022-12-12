@@ -1,13 +1,12 @@
 import express from "express";
-import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 import isAuth from "../middlewares/isAuth.js";
 import LogModel from "../model/log.model.js";
 
 const logRoute = express.Router();
 
-logRoute.get("/all-logs", isAuth, attachCurrentUser, async (req, res) => {
+logRoute.get("/all-logs", isAuth, async (req, res) => {
     try {
-      const logs = await LogModel.find({ user: req.currentUser._id }).populate("user");
+      const logs = await LogModel.find().populate("user");
 
       return res.status(200).json(logs);
     } catch (error) {
