@@ -43,7 +43,14 @@ dcpRoute.get('/one-dcp/:id', isAuth, attachCurrentUser, async (req, res) => {
 dcpRoute.get('/cnpj/:cnpj', isAuth, attachCurrentUser, async (req, res) => {
     try {
         const { cnpj } = req.params;
-        const dcps = await DcpModel.find({Cnpj: cnpj});
+        
+        const dcps = await DcpModel.aggregate([
+            {'$match': {'cnpj': cnpj}},
+            {'$group': {'_id': '$trimestre','cnpj':{'$first': '$cnpj'},'nome':{'$first': '$nome'},'ano':{'$first': '$ano'},'trimestre':{'$first': '$trimestre'}}},
+            {'$sort': {'trimestre': 1}}
+        ])
+        
+        
 
         //LOG - Novo login
         await LogModel.create({
