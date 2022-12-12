@@ -41,8 +41,9 @@ dcpRoute.get('/one-dcp/:id', isAuth, attachCurrentUser, async (req, res) => {
 // DCPs by CNPJ
 dcpRoute.get('/cnpj/:cnpj', isAuth, attachCurrentUser, async (req, res) => {
     try {
-        const { cnpj } = req.query.cnpj;
-        const dcps = await DcpModel.find({ Cnpj: cnpj });
+        const { cnpj } = req.params;
+        console.log(cnpj);
+        const dcps = await DcpModel.find({ cnpj: cnpj });
         return res.status(200).json(dcps);
     } catch (error) {
         console.log(error);
