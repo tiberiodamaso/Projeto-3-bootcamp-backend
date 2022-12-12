@@ -5,6 +5,7 @@ const dcpSchema = new Schema({
     nome: { type: String, required: true },
     ano: { type: Number, required: true },
     mes: { type: Number, required: true },
+    trimestre: { type: Number, required: true },
     linha_1: { type: Number },
     linha_2: { type: Number },
     linha_3: { type: Number },
