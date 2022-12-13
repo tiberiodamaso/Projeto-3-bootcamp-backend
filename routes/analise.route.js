@@ -88,7 +88,14 @@ analiseRoute.get("/acumulado", isAuth, attachCurrentUser, async (req, res) => {
       cnpj: query.cnpj,
       ano: query.ano,
       trimestre: { $lte: query.trimestre },
-    }).sort("mes");
+    }).sort("mes").populate('desconsideradas_linha_4').populate('desconsideradas_linha_5')
+
+    // const popular = [4, 5];
+    // for (let i = 0; i < popular.length; i++) {
+    //   console.log(`desconsideradas_linha_${popular[i]}`)
+    //   await analise.populate(`desconsideradas_linha_${popular[i]}`);
+    // }
+
     return res.status(200).json(analise);
   } catch (error) {
     return res.status(500).json(error);
