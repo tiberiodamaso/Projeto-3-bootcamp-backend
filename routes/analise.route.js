@@ -83,21 +83,23 @@ analiseRoute.get("/acumulado", isAuth, attachCurrentUser, async (req, res) => {
     });
   }
   try {
+    const popularLinhas = [4, 5, 9, 12, 15, 19, 20, 42, 43];
+    const popularCampos = [];
+    for (let i = 0; i < popularLinhas.length; i++) {
+      popularCampos.push(`desconsideradas_linha_${popularLinhas[i]}`);
+    }
     let analise = await AnaliseModel.find({
       user: currentUser,
       cnpj: query.cnpj,
       ano: query.ano,
       trimestre: { $lte: query.trimestre },
-    }).sort("mes").populate('desconsideradas_linha_4').populate('desconsideradas_linha_5')
-
-    // const popular = [4, 5];
-    // for (let i = 0; i < popular.length; i++) {
-    //   console.log(`desconsideradas_linha_${popular[i]}`)
-    //   await analise.populate(`desconsideradas_linha_${popular[i]}`);
-    // }
+    })
+      .sort("mes")
+      .populate(popularCampos);
 
     return res.status(200).json(analise);
   } catch (error) {
+    console.log(error);
     return res.status(500).json(error);
   }
 });
