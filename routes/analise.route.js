@@ -65,6 +65,36 @@ analiseRoute.get(
   }
 );
 
+analiseRoute.get("/acumulado", isAuth, attachCurrentUser, async (req, res) => {
+  const { query, currentUser } = req;
+  if (
+    !query.hasOwnProperty("cnpj") ||
+    !query.hasOwnProperty("ano") ||
+    !query.hasOwnProperty("trimestre")
+  ) {
+    return res.status(400).json({
+      error:
+        "Nem todos os campos de query preenchidos. Deve conter 'cnpj', 'ano' e 'trimestre'.",
+    });
+  }
+  if (!query.cnpj.toString().match(/^\d{14}$/)) {
+    return res.status(400).json({
+      Erro: "Cnpj deve ter exatamente 14 digitos, e apenas digitos.",
+    });
+  }
+  try {
+    let analise = await AnaliseModel.find({
+      user: currentUser,
+      cnpj: query.cnpj,
+      ano: query.ano,
+      trimestre: { $lte: query.trimestre },
+    }).sort("mes");
+    return res.status(200).json(analise);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+
 analiseRoute.put("/update", isAuth, attachCurrentUser, async (req, res) => {
   const { query, currentUser } = req;
   const { cnpj, ano, mes, linha } = query;
@@ -77,7 +107,8 @@ analiseRoute.put("/update", isAuth, attachCurrentUser, async (req, res) => {
   try {
     const response = await AnaliseModel.findOneAndUpdate(
       { user: currentUser._id, ano: ano, mes: mes },
-      req.body, { new: true}
+      req.body,
+      { new: true }
     );
     return res.status(200).json(response);
   } catch (error) {
