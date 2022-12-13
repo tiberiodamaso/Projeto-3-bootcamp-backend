@@ -13,15 +13,15 @@ const dcpRoute = express.Router();
 // All DCP
 dcpRoute.get('/all-dcp', isAuth, attachCurrentUser, async (req, res) => {
     try {
-        console.log(req.query)
+        console.log(req.query);
         const { cnpj, ano, trimestre } = req.query;
-        console.log(cnpj, ano, trimestre)
+        console.log(cnpj, ano, trimestre);
         // const { lower, upper } = trimestre(req.query.trim);
         // console.log(cnpj, lower, upper, req.query.trim);
         const dcps = await DcpModel.find({
             cnpj: String(cnpj),
             ano: ano,
-            trimestre: trimestre
+            trimestre: trimestre,
             // $and: [{ mes: { $gte: lower } }, { mes: { $lte: upper } }],
         });
         return res.status(200).json(dcps);
@@ -46,12 +46,25 @@ dcpRoute.get('/one-dcp/:id', isAuth, attachCurrentUser, async (req, res) => {
 dcpRoute.get('/cnpj/:cnpj', isAuth, attachCurrentUser, async (req, res) => {
     try {
         const { cnpj } = req.params;
-        const dcps = await DcpModel.find({ Cnpj: cnpj });
 
-        //LOG - Novo login
+        const dcps = await DcpModel.aggregate([
+            { $match: { cnpj: cnpj } },
+            {
+                $group: {
+                    _id: '$trimestre',
+                    cnpj: { $first: '$cnpj' },
+                    nome: { $first: '$nome' },
+                    ano: { $first: '$ano' },
+                    trimestre: { $first: '$trimestre' },
+                },
+            },
+            { $sort: { trimestre: 1 } },
+        ]);
+
+        //LOG
         await LogModel.create({
             user: req.currentUser._id,
-            route: 'CNPJ',
+            route: 'DCP/CNPJ',
             log: `Consulta DCP do CNPJ: ${cnpj}`,
         });
 
