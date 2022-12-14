@@ -22,6 +22,35 @@ analiseRoute.get(
   }
 );
 
+analiseRoute.get("/view", isAuth, attachCurrentUser, async (req, res) => {
+  try {
+    const { currentUser } = req;
+    const analises = await AnaliseModel.aggregate([
+      { $match: { user: currentUser._id } },
+      {
+        $group: {
+          _id: { cnpj: "$cnpj", ano: "$ano", trimestre: "$trimestre" },
+          lastUpdate: { $max: "$updatedAt" },
+        },
+      },
+      { $sort: { lastUpdate: -1 } },
+      {
+        $project: {
+          _id: 0,
+          lastUpdate: "$lastUpdate",
+          cnpj: "$_id.cnpj",
+          ano: "$_id.ano",
+          trimestre: "$_id.trimestre",
+        },
+      },
+    ]);
+    return res.status(200).json(analises);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
+
 analiseRoute.get(
   "/one-analise",
   isAuth,
