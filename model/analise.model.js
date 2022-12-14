@@ -15,7 +15,8 @@ const analiseSchema = new Schema({
   desconsideradas_linha_20: [{ type: Types.ObjectId, ref: "Nfe" }],
   desconsideradas_linha_42: [{ type: Types.ObjectId, ref: "Nfe" }],
   desconsideradas_linha_43: [{ type: Types.ObjectId, ref: "Nfe" }],
-});
+},
+{ timestamps: true });
 
 const AnaliseModel = model("Analise", analiseSchema);
 
