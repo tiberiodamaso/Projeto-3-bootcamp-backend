@@ -126,6 +126,10 @@ analiseRoute.get("/acumulado", isAuth, attachCurrentUser, async (req, res) => {
       .sort("mes")
       .populate(popularCampos);
 
+    if (analise.filter((e) => e.trimestre === query.trimestre).length === 0) {
+      criarTrimestre(currentUser, query.cnpj, query.ano, query.trimestre);
+    }
+
     return res.status(200).json(analise);
   } catch (error) {
     console.log(error);
