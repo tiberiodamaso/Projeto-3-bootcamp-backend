@@ -209,6 +209,176 @@ analiseRoute.delete(
   }
 );
 
+
+
+analiseRoute.get("/analise-atual", isAuth, attachCurrentUser, async (req, res) => {
+    
+    const { query, currentUser } = req;
+    
+    if (!query.hasOwnProperty("cnpj") || !query.hasOwnProperty("ano") || !query.hasOwnProperty("trimestre")) {
+      return res.status(400).json({error: "Nem todos os campos de query preenchidos. Deve conter 'cnpj', 'ano' e 'trimestre'."});
+    }
+    
+    if (!query.cnpj.toString().match(/^\d{14}$/)) {
+      return res.status(400).json({
+        Erro: "Cnpj deve ter exatamente 14 digitos, e apenas digitos.",
+      });
+    }
+    
+    try {
+      const popularLinhas = [4, 5, 9, 12, 15, 19, 20, 42, 43];
+      const popularCampos = [];
+      for (let i = 0; i < popularLinhas.length; i++) {
+        popularCampos.push(`desconsideradas_linha_${popularLinhas[i]}`);
+      }
+
+      let analise = await AnaliseModel.find({user: currentUser, cnpj: query.cnpj, ano: query.ano, trimestre: query.trimestre}).sort({lastUpdate: -1}).limit(3).populate(popularCampos);
+      
+      const desconsideradas = [];
+
+      analise.forEach(mes => {
+        
+        
+        mes.desconsideradas_linha_4.forEach(nfe => {    
+          desconsideradas.push({
+            '_id': nfe._id,
+            'operacao': nfe.operacao,
+            'pais': nfe.pais,
+            'cfop': nfe.cfop,
+            'ncm': nfe.ncm,
+            'desc_ncm': nfe.desc_ncm,
+            'valor': nfe.valor,
+            'ni': nfe.ni,
+            'nome': nfe.nome
+          })        
+        });
+        
+        mes.desconsideradas_linha_5.forEach(nfe => {    
+            desconsideradas.push({
+              '_id': nfe._id,
+              'operacao': nfe.operacao,
+              'pais': nfe.pais,
+              'cfop': nfe.cfop,
+              'ncm': nfe.ncm,
+              'desc_ncm': nfe.desc_ncm,
+              'valor': nfe.valor,
+              'ni': nfe.ni,
+              'nome': nfe.nome
+            })    
+        });
+        
+        mes.desconsideradas_linha_9.forEach(nfe => {    
+          desconsideradas.push({
+            '_id': nfe._id,
+            'operacao': nfe.operacao,
+            'pais': nfe.pais,
+            'cfop': nfe.cfop,
+            'ncm': nfe.ncm,
+            'desc_ncm': nfe.desc_ncm,
+            'valor': nfe.valor,
+            'ni': nfe.ni,
+            'nome': nfe.nome
+          })        
+        });
+        
+        mes.desconsideradas_linha_12.forEach(nfe => {    
+          desconsideradas.push({
+            '_id': nfe._id,
+            'operacao': nfe.operacao,
+            'pais': nfe.pais,
+            'cfop': nfe.cfop,
+            'ncm': nfe.ncm,
+            'desc_ncm': nfe.desc_ncm,
+            'valor': nfe.valor,
+            'ni': nfe.ni,
+            'nome': nfe.nome
+          })        
+        });
+        
+        mes.desconsideradas_linha_15.forEach(nfe => {    
+          desconsideradas.push({
+            '_id': nfe._id,
+            'operacao': nfe.operacao,
+            'pais': nfe.pais,
+            'cfop': nfe.cfop,
+            'ncm': nfe.ncm,
+            'desc_ncm': nfe.desc_ncm,
+            'valor': nfe.valor,
+            'ni': nfe.ni,
+            'nome': nfe.nome
+          })       
+        });
+        
+        mes.desconsideradas_linha_19.forEach(nfe => {    
+          desconsideradas.push({
+            '_id': nfe._id,
+            'operacao': nfe.operacao,
+            'pais': nfe.pais,
+            'cfop': nfe.cfop,
+            'ncm': nfe.ncm,
+            'desc_ncm': nfe.desc_ncm,
+            'valor': nfe.valor,
+            'ni': nfe.ni,
+            'nome': nfe.nome
+          })        
+        });
+        
+        mes.desconsideradas_linha_20.forEach(nfe => {               
+          desconsideradas.push({
+            '_id': nfe._id,
+            'operacao': nfe.operacao,
+            'pais': nfe.pais,
+            'cfop': nfe.cfop,
+            'ncm': nfe.ncm,
+            'desc_ncm': nfe.desc_ncm,
+            'valor': nfe.valor,
+            'ni': nfe.ni,
+            'nome': nfe.nome
+          })        
+        });
+        
+        mes.desconsideradas_linha_42.forEach(nfe => {    
+          desconsideradas.push({
+            '_id': nfe._id,
+            'operacao': nfe.operacao,
+            'pais': nfe.pais,
+            'cfop': nfe.cfop,
+            'ncm': nfe.ncm,
+            'desc_ncm': nfe.desc_ncm,
+            'valor': nfe.valor,
+            'ni': nfe.ni,
+            'nome': nfe.nome
+          })        
+        });
+
+        mes.desconsideradas_linha_43.forEach(nfe => {    
+          desconsideradas.push({
+            '_id': nfe._id,
+            'operacao': nfe.operacao,
+            'pais': nfe.pais,
+            'cfop': nfe.cfop,
+            'ncm': nfe.ncm,
+            'desc_ncm': nfe.desc_ncm,
+            'valor': nfe.valor,
+            'ni': nfe.ni,
+            'nome': nfe.nome
+          })        
+        });
+
+      })
+      
+      
+      //return res.status(200).json(analise);
+      return res.status(200).json(desconsideradas);
+
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  }
+);
+
+
+
 async function criarTrimestre(user, cnpj, ano, trimestre) {
   const trimestre_array = [];
   for (let i = 0; i < 3; i++) {
