@@ -100,6 +100,20 @@ nfeRoute.get('/mes', isAuth, attachCurrentUser, async (req, res) => {
         "7105",
         "7127"]
     }
+    if (nLinha === '12') {
+      cfops = [
+        "1101",
+        "1111",
+        "1116",
+        "1120",
+        "1122",
+        "2101",
+        "2111",
+        "2116",
+        "2120",
+        "2122"]
+    }
+      
     const nfes = await NfeModel.find({
       'cnpj': cnpj,
       'ano': ano,
