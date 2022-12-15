@@ -7,6 +7,9 @@ import isAuth from "../middlewares/isAuth.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 import isAdmin from "../middlewares/isAdmin.js";
 import nodemailer from 'nodemailer'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 const userRoute = express.Router()
 const saltRounds = 10
@@ -48,7 +51,7 @@ userRoute.post('/signup', async (req, res) => {
 
     // Envia email de confirmação
     const mailOptions = {
-      from: process.env.EMAIL,
+      from: 'edwinuspompholyx@hotmail.com',
       to: email,
       subject: 'Ativação de conta',
       html: `
