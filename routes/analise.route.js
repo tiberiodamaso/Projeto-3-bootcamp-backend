@@ -126,10 +126,11 @@ analiseRoute.get("/acumulado", isAuth, attachCurrentUser, async (req, res) => {
       .sort("mes")
       .populate(popularCampos);
 
-    if (analise.filter((e) => e.trimestre === query.trimestre).length === 0) {
-      criarTrimestre(currentUser, query.cnpj, query.ano, query.trimestre);
+    if (analise.filter((e) => e.trimestre === +query.trimestre).length === 0) {
+      const novoTrimestre = await criarTrimestre(currentUser, query.cnpj, query.ano, query.trimestre);
+      analise = [...analise, ...novoTrimestre];
     }
-
+    
     return res.status(200).json(analise);
   } catch (error) {
     console.log(error);
