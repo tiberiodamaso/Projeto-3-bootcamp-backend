@@ -106,7 +106,9 @@ analiseRoute.get("/acumulado", isAuth, attachCurrentUser, async (req, res) => {
 
 analiseRoute.put("/update", isAuth, attachCurrentUser, async (req, res) => {
   const { query, currentUser } = req;
-  const { cnpj, ano, mes, linha } = query;
+  const { cnpj, ano, mes, nLinha } = query;
+  console.log(cnpj, ano, mes, nLinha)
+  console.log(req.body)
   if (!(cnpj && ano && mes)) {
     return res.status(400).json({
       error:

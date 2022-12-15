@@ -15,7 +15,7 @@ dcpRoute.get('/all-dcp', isAuth, attachCurrentUser, async (req, res) => {
     try {
         console.log(req.query)
         const { cnpj, ano, trimestre } = req.query;
-        console.log(cnpj, ano, trimestre)
+        // console.log(cnpj, ano, trimestre)
         // const { lower, upper } = trimestre(req.query.trim);
         // console.log(cnpj, lower, upper, req.query.trim);
         const dcps = await DcpModel.find({

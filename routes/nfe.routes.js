@@ -53,7 +53,7 @@ nfeRoute.get('/one-nfe/:id', isAuth, attachCurrentUser, async (req, res) => {
 nfeRoute.get('/mes', isAuth, attachCurrentUser, async (req, res) => {
   try {
     const { cnpj, ano, mes, nLinha } = req.query;
-    console.log(cnpj, ano, mes, nLinha)
+    // console.log(cnpj, ano, mes, nLinha)
     let cfops
     if (nLinha === '4') {
       cfops = ["7101", "7105", "7127"]
