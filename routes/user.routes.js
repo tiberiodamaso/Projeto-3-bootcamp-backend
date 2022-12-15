@@ -11,7 +11,7 @@ import nodemailer from 'nodemailer'
 const userRoute = express.Router()
 const saltRounds = 10
 const transporter = nodemailer.createTransport({
-  service: 'Outlook',
+  service: 'Hotmail',
   auth: {
     secure: false,
     user: process.env.EMAIL,
@@ -48,13 +48,13 @@ userRoute.post('/signup', async (req, res) => {
 
     // Envia email de confirmação
     const mailOptions = {
-      from: 'luiz.agsimoes@outlook.com',
+      from: process.env.EMAIL,
       to: email,
       subject: 'Ativação de conta',
       html: `
       <h1>Bem vindo ao nosso site</h1>
       <p>Confirme seu email clicando no link abaixo</p>
-      <a href="http://127.0.0.1:8082/user/activate-account/${newUser._id}">Ative sua conta</a>
+      <a href="https://analisedcp.cyclic.app/user/activate-account/${newUser._id}">Ative sua conta</a>
       `
     }
 
